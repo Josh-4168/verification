@@ -1,0 +1,16 @@
+controller\DeleteVerificationServlet.class
+controller\AdminLoginServlet.class
+model\VerificationCode.class
+util\DBConnection.class
+dao\AdminDAO.class
+dao\VerificationDAO.class
+controller\ChangePasswordServlet.class
+com\mycompany\telegramapp\JakartaRestConfiguration.class
+controller\PhoneSubmitServlet.class
+com\mycompany\telegramapp\resources\JakartaEE10Resource.class
+controller\VerifyCodeServlet.class
+controller\GenerateCodeServlet.class
+controller\LogoutServlet.class
+dao\UserDAO.class
+model\User.class
+model\Admin.class
