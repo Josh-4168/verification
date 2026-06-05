@@ -9,6 +9,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.VerificationCode;
 
 @WebServlet(name = "VerifyCodeServlet", urlPatterns = {"/VerifyCodeServlet"})
 public class VerifyCodeServlet extends HttpServlet {
@@ -19,17 +20,32 @@ public class VerifyCodeServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
        
-        String phone = (String) request.getSession() .getAttribute("phone"); 
+        String phone = (String) request.getSession() .getAttribute("fullPhone"); 
         String code = request.getParameter("code"); 
-        UserDAO userDAO = new UserDAO(); 
+        System.out.println("Phone = " + phone);
+        System.out.println("Entered code: " + code);
+
+ if(code != null && code.matches("^[0-9]{5,6}$")) {
+
+        UserDAO userDAO = new UserDAO();
         int userId = userDAO.getUserId(phone);
+
+        VerificationCode vc = new VerificationCode();
+        vc.setUserId(userId);
+        vc.setCode(code);
+
         VerificationDAO verificationDAO = new VerificationDAO();
-        boolean valid = verificationDAO.verifyCode( userId, code ); 
-        if(valid) { request.getSession() .setAttribute("authenticated", true);
-        response.getWriter().write("VERIFIED");
-        } else { response.getWriter().write("INVALID"); }
+        verificationDAO.saveCode(vc);
+
+        response.sendRedirect("success.jsp");
+
+    } else {
+
+        response.sendRedirect("verify.jsp?error=1");
+
+    }
     }
 
     
 
-}
+    }

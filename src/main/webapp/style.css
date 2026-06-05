@@ -97,32 +97,6 @@ button:hover{
     top:20px;
     right:20px;
 }
-
-.dashboard{
-    width:100%;
-    display:flex;
-    min-height:100vh;
-}
-
-.sidebar{
-    width:250px;
-    background:#1f2c3a;
-    padding:30px;
-}
-
-.sidebar h2{
-    margin-bottom:30px;
-}
-
-.sidebar ul{
-    list-style:none;
-}
-
-.sidebar ul li{
-    padding:15px 0;
-    cursor:pointer;
-}
-
 .main-content{
     flex:1;
     padding:40px;
@@ -184,4 +158,14 @@ button:hover{
         width:100%;
     }
 }
-
+.error-msg{
+    color:#ff6b6b;
+    margin-bottom:15px;
+    text-align:center;
+}
+.error-msg{
+    color:#ff6b6b;
+    text-align:center;
+    margin-bottom:15px;
+    font-size:14px;
+}

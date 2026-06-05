@@ -3,7 +3,7 @@ package controller;
  import dao.UserDAO; 
 import model.User;
 import java.io.IOException;
-import java.io.PrintWriter;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -19,17 +19,25 @@ public class PhoneSubmitServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-         PrintWriter out = response.getWriter();
+         
          
          String phone = request.getParameter("phone"); 
-         User user = new User(phone); 
+         
+if(!phone.matches("^[97][0-9]{8}$")){
+    response.sendRedirect("index.jsp?error=phone");
+    return;
+}
+         String countryCode =request.getParameter("countryCode");
+        String fullPhone =countryCode + phone;
+        
+         User user = new User(fullPhone); 
          UserDAO dao = new UserDAO();
          boolean status = dao.saveUser(user);
          if(status) { 
              HttpSession session = request.getSession();
-             session.setAttribute("phone", phone);
-             response.getWriter().write("SUCCESS"); 
-         } else { response.getWriter().write("FAILED"); }
+             session.setAttribute("fullPhone", fullPhone);
+              response.sendRedirect("verify.jsp");
+         } else {  response.getWriter().write("FAILED"); }
     }
 
     

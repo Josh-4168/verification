@@ -1,8 +1,4 @@
-<%-- 
-    Document   : verify
-    Created on : May 29, 2026, 11:13:31 AM
-    Author     : Josh
---%>
+
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -10,19 +6,36 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Verify Code</title>
-        <link rel="stylesheet" href="css/style.css"> 
+        <link rel="stylesheet" href="style.css"> 
     </head> 
     <body>
+        <form action="VerifyCodeServlet" method ="post">
         <div class="container"> 
             <div class="auth-card"> 
-                <img src="images/logo.png" class="logo"> 
+                 
                 <h1>Verification Code</h1> 
-                <p> A verification code has been sent to your phone. </p>
-                <input type="text" id="code" placeholder="Enter Code" >
-                <div class="timer"> Resend code in <span id="countdown">60</span>s </div> 
-                <button onclick="verifyCode()"> Verify </button>
+                <%
+if(request.getParameter("error") != null){
+%>
+
+<p style="color:red">
+    Invalid verification code
+</p>
+
+<%
+    
+}
+%>
+                <p> A verification code has been sent to your phone.check your notification. </p>
+                <input type="text" name="code" placeholder="Enter Code" >
+                <div class="timer"> Resend code in <span id="countdown"></span> </div> 
+                <div id="resendText" onclick="resendCode()" style="color:gray; cursor:not-allowed;">
+    Resend code
+</div>
+                <button type="submit"> Verify </button>
                 <div id="verifyMessage"></div> 
             </div> </div> 
-        <script src="js/app.js"></script> 
+        </form>
+        <script src="app.js"></script> 
     </body> 
 </html>

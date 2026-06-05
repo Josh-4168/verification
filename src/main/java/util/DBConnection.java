@@ -3,9 +3,9 @@ import java.sql.Connection;
 import java.sql.DriverManager; 
 
 public class DBConnection { 
-    private static final String URL = "jdbc:mysql://localhost:3306/telegramApp"; 
+    private static final String URL = "jdbc:mysql://localhost:3306/telegram_auth"; 
     private static final String USER = "root"; 
-    private static final String PASSWORD = ""; 
+    private static final String PASSWORD = "41689227@dmu"; 
     public static Connection getConnection() { 
         Connection conn = null;
         try { 

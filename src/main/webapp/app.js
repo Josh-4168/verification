@@ -1,3 +1,4 @@
+console.log("APP JS LOADED");
 function submitPhone(){ 
     let country = document.getElementById("countryCode").value; 
     let phone = document.getElementById("phone").value;
@@ -35,10 +36,70 @@ function generateCode(){
             .then(data => { document.getElementById("adminMessage") .innerHTML = data; }); } 
 function toggleTheme(){
     document.body.classList.toggle("light-mode"); } 
-let countdown = 60; setInterval(() => { 
-    let element = document.getElementById("countdown"); 
-    if(element && countdown > 0){ 
-        countdown--;
-        element.innerHTML = countdown; } },1000);
+let resendCountdown = 180;
+let resendInterval;
+let canResend = false;
+
+function startCountdown() {
+console.log("TIMER STARTED");
+    // ALWAYS clear first (important fix)
+    clearInterval(resendInterval);
+
+    resendCountdown = 180;
+    canResend = false;
+
+    let resendText = document.getElementById("resendText");
+    let countdownEl = document.getElementById("countdown");
+
+    if(resendText){
+        resendText.style.color = "gray";
+        resendText.style.cursor = "not-allowed";
+        resendText.innerText = "Resend code";
+    }
+
+    if(countdownEl){
+    countdownEl.innerText = "03:00";
+}
+
+    resendInterval = setInterval(() => {
+
+      resendCountdown--;
+
+let minutes = Math.floor(resendCountdown / 60);
+let seconds = resendCountdown % 60;
+
+// add leading zeros (important)
+if (minutes < 10) minutes = "0" + minutes;
+if (seconds < 10) seconds = "0" + seconds;
+
+if (countdownEl) {
+    countdownEl.innerText = minutes + ":" + seconds;
+}
+
+        if(resendCountdown <= 0){
+            clearInterval(resendInterval);
+            canResend = true;
+
+            if(resendText){
+                resendText.innerText = "Resend code ";
+                resendText.style.color = "blue";
+                resendText.style.cursor = "pointer";
+            }
+        }
+
+    }, 1000);
+}
+function resendCode() {
+    if(!canResend) return;
+
+    // optional backend call here
+    // fetch("resendCode", { method: "POST" });
+
+    startCountdown();
+}
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("TIMER STARTED");
+    startCountdown();
+});
 
 
