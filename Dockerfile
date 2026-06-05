@@ -1,5 +1,5 @@
 FROM tomcat:10.1-jdk21
 
-COPY target/telegramApp-1.0-SNAPSHOT.war /usr/local/tomcat/webapps/ROOT.war
+COPY telegramApp-1.0-SNAPSHOT.war /usr/local/tomcat/webapps/ROOT.war
 
 EXPOSE 8080
