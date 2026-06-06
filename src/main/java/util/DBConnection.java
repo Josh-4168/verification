@@ -10,10 +10,19 @@ public class DBConnection {
 private static final String USER = "sql5829510";
 
 private static final String PASSWORD = "cVxMCckjQH";
-    public static Connection getConnection() { 
-        Connection conn = null;
-        try { 
-            Class.forName("com.mysql.cj.jdbc.Driver"); 
-            conn = DriverManager.getConnection( URL, USER, PASSWORD ); 
-        } catch (Exception e) { e.printStackTrace(); } 
-        return conn; } }
+    public static Connection getConnection() {
+    try {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+
+        return DriverManager.getConnection(
+            URL,
+            USER,
+            PASSWORD
+        );
+
+    } catch (Exception e) {
+        System.out.println("DATABASE CONNECTION FAILED");
+        e.printStackTrace();
+        return null;
+    }
+}}

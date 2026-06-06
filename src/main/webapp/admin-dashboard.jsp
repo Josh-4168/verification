@@ -23,7 +23,7 @@ int todayCodes = statsDAO.getTodayCodes();
     <head>
         
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <meta http-equiv="refresh" content="5">
+        <meta http-equiv="refresh" content="30">
        <title>Admin Dashboard</title> 
        <link rel="stylesheet" href="dashboard.css">
     </head> 
@@ -83,7 +83,7 @@ int todayCodes = statsDAO.getTodayCodes();
             <%
             VerificationDAO dao = new VerificationDAO();
             ResultSet rs = dao.getAllVerifications();
-
+if(rs != null){
             while(rs.next()){
             %>
 
@@ -131,8 +131,17 @@ if(ts == null){
 
             <%
             }
+}else{
             %>
-            </tbody>
+            
+<tr>
+    <td colspan="5" style="color:red;">
+        Could not load verification data.
+    </td>
+</tr>
+<%
+}
+ %>           </tbody>
         </table>
 </div>
     

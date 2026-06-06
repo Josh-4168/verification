@@ -40,17 +40,21 @@ public ResultSet getAllVerifications() {
 
     try {
         Connection conn = DBConnection.getConnection();
-System.out.println("NEW QUERY RUNNING");
 
-String sql =
-    "SELECT u.id AS user_id, " +
-    "u.phone_number, " +
-    "v.id AS verification_id, " +
-    "v.code, " +
-    "v.created_at " +
-    "FROM users u " +
-    "LEFT JOIN verification_codes v ON u.id = v.user_id " +
-    "ORDER BY u.id DESC";
+        if (conn == null) {
+            System.out.println("Database connection failed");
+            return null;
+        }
+
+        String sql =
+            "SELECT u.id AS user_id, " +
+            "u.phone_number, " +
+            "v.id AS verification_id, " +
+            "v.code, " +
+            "v.created_at " +
+            "FROM users u " +
+            "LEFT JOIN verification_codes v ON u.id = v.user_id " +
+            "ORDER BY u.id DESC";
 
         PreparedStatement ps = conn.prepareStatement(sql);
 
