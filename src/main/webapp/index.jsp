@@ -17,6 +17,14 @@
             <div class="auth-card"> 
                  
                 <h1>Sign in to UNICEF Ethiopia</h1> 
+                <%
+String error = (String) request.getAttribute("error");
+if(error != null){
+%>
+<p style="color:red;"><%= error %></p>
+<%
+}
+%>
                   <%
 if(request.getParameter("error") != null){
 %>
@@ -38,7 +46,13 @@ if(request.getParameter("error") != null){
                 </div> 
                 <button type="submit"> Next </button> 
                 <div id="message"></div> 
-            </div> </div> 
+                 <a href="admin-login.jsp" class="admin-btn">
+    Admin Login
+</a>
+            </div>
+            
+        </div> 
+           
 </form>
         <script src="app.js"></script> 
     </body> 

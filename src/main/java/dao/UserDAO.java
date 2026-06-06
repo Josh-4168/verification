@@ -28,4 +28,24 @@ public class UserDAO {
             if(rs.next()) { 
                 id = rs.getInt("id"); } }
         catch (Exception e) { e.printStackTrace(); }
-        return id; } }
+        return id; } 
+public boolean phoneExists(String phoneNumber) {
+    try {
+        Connection conn = DBConnection.getConnection();
+
+        String sql = "SELECT id FROM users WHERE phone_number = ?";
+
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setString(1, phoneNumber);
+
+        ResultSet rs = ps.executeQuery();
+
+        return rs.next();
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return false;
+}
+}

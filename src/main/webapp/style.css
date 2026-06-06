@@ -169,3 +169,11 @@ button:hover{
     margin-bottom:15px;
     font-size:14px;
 }
+.admin-btn{
+    display:inline-block;
+    padding:10px 20px;
+    background:#333;
+    color:white;
+    text-decoration:none;
+    border-radius:5px;
+}

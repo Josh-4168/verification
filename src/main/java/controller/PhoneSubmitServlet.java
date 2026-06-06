@@ -27,12 +27,19 @@ if(!phone.matches("^[97][0-9]{8}$")){
     response.sendRedirect("index.jsp?error=phone");
     return;
 }
-         String countryCode =request.getParameter("countryCode");
-        String fullPhone =countryCode + phone;
-        
-         User user = new User(fullPhone); 
-         UserDAO dao = new UserDAO();
-         boolean status = dao.saveUser(user);
+         String countryCode = request.getParameter("countryCode");
+String fullPhone = countryCode + phone;
+
+UserDAO dao = new UserDAO();
+
+if (dao.phoneExists(fullPhone)) {
+    request.setAttribute("error", "Phone number already registered.");
+    request.getRequestDispatcher("index.jsp").forward(request, response);
+    return;
+}
+
+User user = new User(fullPhone);
+boolean status = dao.saveUser(user);
          if(status) { 
              HttpSession session = request.getSession();
              session.setAttribute("fullPhone", fullPhone);
