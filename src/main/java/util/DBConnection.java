@@ -3,9 +3,13 @@ import java.sql.Connection;
 import java.sql.DriverManager; 
 
 public class DBConnection { 
-    private static final String URL = "jdbc:mysql://localhost:3306/telegram_auth"; 
-    private static final String USER = "root"; 
-    private static final String PASSWORD = "41689227@dmu"; 
+    
+    private static final String URL =
+    "jdbc:mysql://sql5.freesqldatabase.com:3306/sql5829510?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
+
+private static final String USER = "sql5829510";
+
+private static final String PASSWORD = "cVxMCckjQH";
     public static Connection getConnection() { 
         Connection conn = null;
         try { 
