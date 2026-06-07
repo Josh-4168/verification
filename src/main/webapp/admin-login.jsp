@@ -38,6 +38,8 @@ if(request.getParameter("error") != null){
         <br><br>
 
         <button type="submit">Login</button>
+ 
+    <a href="index.jsp" class="links">User Registration</a>
 
     </form>
 
