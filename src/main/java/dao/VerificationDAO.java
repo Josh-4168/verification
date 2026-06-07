@@ -4,173 +4,195 @@ import util.DBConnection;
 import java.sql.Connection; 
 import java.sql.PreparedStatement; 
 import java.sql.ResultSet; 
+import java.util.ArrayList;
+import java.util.List;
+import model.VerificationRecord;
 
 public class VerificationDAO {
-    public boolean saveCode(VerificationCode vc) {
-        boolean status = false;
-        try { Connection conn = DBConnection.getConnection(); 
-        String sql = "INSERT INTO verification_codes(user_id, code, status) VALUES(?,?,?)"; 
-        PreparedStatement ps = conn.prepareStatement(sql); 
-        ps.setInt(1, vc.getUserId()); 
+   public boolean saveCode(VerificationCode vc) {
+
+    String sql =
+        "INSERT INTO verification_codes(user_id, code, status) VALUES(?,?,?)";
+
+    try (
+        Connection conn = DBConnection.getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql)
+    ) {
+
+        ps.setInt(1, vc.getUserId());
         ps.setString(2, vc.getCode());
-        ps.setString(3, "PENDING"); 
-        int rows = ps.executeUpdate(); 
-        if(rows > 0) { status = true; } } 
-        catch (Exception e) { e.printStackTrace(); } 
-        return status; } 
-    public boolean verifyCode(int userId, String code) { 
-        boolean valid = false; 
-        try { Connection conn = DBConnection.getConnection(); 
-        String sql = "SELECT * FROM verification_codes WHERE user_id=? AND code=? AND status='PENDING'"; 
-        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setString(3, "PENDING");
+
+        return ps.executeUpdate() > 0;
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return false;
+} 
+   public boolean verifyCode(int userId, String code) {
+
+    String sql =
+        "SELECT * FROM verification_codes " +
+        "WHERE user_id=? AND code=? AND status='PENDING'";
+
+    try (
+        Connection conn = DBConnection.getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql)
+    ) {
+
         ps.setInt(1, userId);
         ps.setString(2, code);
-        System.out.println("Searching...");
-System.out.println("userId = " + userId);
-System.out.println("code = " + code);
-        ResultSet rs = ps.executeQuery(); 
-        if(rs.next()) { System.out.println("MATCH FOUND");
-        valid = true;
-        String update = "UPDATE verification_codes SET status='USED' WHERE id=?"; 
-        PreparedStatement ups = conn.prepareStatement(update);
-        ups.setInt(1, rs.getInt("id"));
-        int rows =ups.executeUpdate();System.out.println("Updated rows = " + rows); }else{System.out.println("NO MATCH FOUND");} } catch (Exception e) { e.printStackTrace(); }
-        return valid; }
-public ResultSet getAllVerifications() {
 
-    try {
-        Connection conn = DBConnection.getConnection();
+        try (ResultSet rs = ps.executeQuery()) {
 
-        if (conn == null) {
-            System.out.println("Database connection failed");
-            return null;
+            if (rs.next()) {
+
+                String update =
+                    "UPDATE verification_codes SET status='USED' WHERE id=?";
+
+                try (PreparedStatement ups =
+                         conn.prepareStatement(update)) {
+
+                    ups.setInt(1, rs.getInt("id"));
+                    ups.executeUpdate();
+                }
+
+                return true;
+            }
         }
 
-        String sql =
-            "SELECT u.id AS user_id, " +
-            "u.phone_number, " +
-            "v.id AS verification_id, " +
-            "v.code, " +
-            "v.created_at " +
-            "FROM users u " +
-            "LEFT JOIN verification_codes v ON u.id = v.user_id " +
-            "ORDER BY u.id DESC";
-
-        PreparedStatement ps = conn.prepareStatement(sql);
-
-        return ps.executeQuery();
-
-    } catch(Exception e) {
+    } catch (Exception e) {
         e.printStackTrace();
     }
 
-    return null;
+    return false;
 }
-public int getTotalPhones(){
+public List<VerificationRecord> getAllVerifications() {
 
-    int count = 0;
+    List<VerificationRecord> list = new ArrayList<>();
 
-    try{
+    String sql =
+        "SELECT u.id AS user_id, " +
+        "u.phone_number, " +
+        "v.code, " +
+        "v.created_at " +
+        "FROM users u " +
+        "LEFT JOIN verification_codes v ON u.id = v.user_id " +
+        "ORDER BY u.id DESC";
+
+    try (
         Connection conn = DBConnection.getConnection();
-
-        String sql = "SELECT COUNT(*) FROM users";
-
         PreparedStatement ps = conn.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery()
+    ) {
 
-        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
 
-        if(rs.next()){
-            count = rs.getInt(1);
+            list.add(
+                new VerificationRecord(
+                    rs.getInt("user_id"),
+                    rs.getString("phone_number"),
+                    rs.getString("code"),
+                    rs.getTimestamp("created_at")
+                )
+            );
         }
 
-    }catch(Exception e){
+    } catch (Exception e) {
         e.printStackTrace();
     }
 
-    return count;
+    return list;
 }
-public int getTotalCodes(){
+public int getTotalPhones() {
 
-    int count = 0;
+    String sql = "SELECT COUNT(*) FROM users";
 
-    try{
+    try (
         Connection conn = DBConnection.getConnection();
-
-        String sql = "SELECT COUNT(*) FROM verification_codes";
-
         PreparedStatement ps = conn.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery()
+    ) {
 
-        ResultSet rs = ps.executeQuery();
-
-        if(rs.next()){
-            count = rs.getInt(1);
+        if (rs.next()) {
+            return rs.getInt(1);
         }
 
-    }catch(Exception e){
+    } catch (Exception e) {
         e.printStackTrace();
     }
 
-    return count;
+    return 0;
 }
-public int getTodayCodes(){
+public int getTotalCodes() {
 
-    int count = 0;
+    String sql = "SELECT COUNT(*) FROM verification_codes";
 
-    try{
+    try (
         Connection conn = DBConnection.getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery()
+    ) {
 
-        String sql =
+        if (rs.next()) {
+            return rs.getInt(1);
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return 0;
+}
+public int getTodayCodes() {
+
+    String sql =
         "SELECT COUNT(*) FROM verification_codes " +
         "WHERE DATE(created_at)=CURDATE()";
 
+    try (
+        Connection conn = DBConnection.getConnection();
         PreparedStatement ps = conn.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery()
+    ) {
 
-        ResultSet rs = ps.executeQuery();
-
-        if(rs.next()){
-            count = rs.getInt(1);
+        if (rs.next()) {
+            return rs.getInt(1);
         }
 
-    }catch(Exception e){
+    } catch (Exception e) {
         e.printStackTrace();
     }
 
-    return count;
+    return 0;
 }
-public boolean deleteVerification(int userId){
+public boolean deleteVerification(int userId) {
 
-    boolean deleted = false;
+    String sql1 =
+        "DELETE FROM verification_codes WHERE user_id=?";
 
-    try{
+    String sql2 =
+        "DELETE FROM users WHERE id=?";
+
+    try (
         Connection conn = DBConnection.getConnection();
-
-        String sql1 =
-            "DELETE FROM verification_codes WHERE user_id=?";
-
-        PreparedStatement ps1 =
-            conn.prepareStatement(sql1);
+        PreparedStatement ps1 = conn.prepareStatement(sql1);
+        PreparedStatement ps2 = conn.prepareStatement(sql2)
+    ) {
 
         ps1.setInt(1, userId);
         ps1.executeUpdate();
 
-        String sql2 =
-            "DELETE FROM users WHERE id=?";
-
-        PreparedStatement ps2 =
-            conn.prepareStatement(sql2);
-
         ps2.setInt(1, userId);
 
-        int rows = ps2.executeUpdate();
+        return ps2.executeUpdate() > 0;
 
-        if(rows > 0){
-            deleted = true;
-        }
-
-    }catch(Exception e){
+    } catch (Exception e) {
         e.printStackTrace();
     }
 
-    return deleted;
+    return false;
 }
 }

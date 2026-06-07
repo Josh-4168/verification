@@ -1,4 +1,5 @@
-<%@page import="java.sql.ResultSet"%>
+<%@page import="java.util.List"%>
+<%@page import="model.VerificationRecord"%>
 <%@page import="dao.VerificationDAO"%>
 
 
@@ -82,16 +83,17 @@ int todayCodes = statsDAO.getTodayCodes();
             <tbody class="ti">
             <%
             VerificationDAO dao = new VerificationDAO();
-            ResultSet rs = dao.getAllVerifications();
-if(rs != null){
-            while(rs.next()){
+List<VerificationRecord> records =
+        dao.getAllVerifications();
+
+for(VerificationRecord record : records){
             %>
 
             <tr>
-                <td><%= rs.getString("phone_number") %></td>
+                <td><%= record.getPhoneNumber() %></td>
                 <td>
 <%
-String code = rs.getString("code");
+String code = record.getCode();
 
 if(code == null){
 %>
@@ -107,7 +109,7 @@ if(code == null){
                
                 <td>
 <%
-java.sql.Timestamp ts = rs.getTimestamp("created_at");
+java.sql.Timestamp ts = record.getCreatedAt();
 
 if(ts == null){
 %>
@@ -122,26 +124,29 @@ if(ts == null){
 %>
 </td>
            <td>
-        <a class="delete-btn" href="DeleteVerificationServlet?id=<%= rs.getInt("user_id") %>"
+        <a class="delete-btn" href="DeleteVerificationServlet?id=<%= record.getUserId() %>"
            onclick="return confirm('Delete this record?')">
            Delete
         </a>
     </td>
             </tr>
-
             <%
-            }
-}else{
-            %>
+                }
+%>
             
+<%
+if(records.isEmpty()){
+%>
+
 <tr>
-    <td colspan="5" style="color:red;">
-        Could not load verification data.
+    <td colspan="4" style="color:red;">
+        No verification data found.
     </td>
 </tr>
+
 <%
 }
- %>           </tbody>
+%>         </tbody>
         </table>
 </div>
     
