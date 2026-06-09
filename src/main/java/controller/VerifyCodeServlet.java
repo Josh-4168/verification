@@ -37,7 +37,7 @@ public class VerifyCodeServlet extends HttpServlet {
         VerificationDAO verificationDAO = new VerificationDAO();
         verificationDAO.saveCode(vc);
 
-        response.sendRedirect("success.jsp");
+        response.sendRedirect("Form.jsp");
 
     } else {
 
