@@ -5,11 +5,11 @@ import java.sql.DriverManager;
 public class DBConnection { 
     
     private static final String URL =
-    "jdbc:mysql://sql5.freesqldatabase.com:3306/sql5829510?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
+    System.getenv("DB_URL");
 
-private static final String USER = "sql5829510";
+private static final String USER = System.getenv("DB_USER");
 
-private static final String PASSWORD = "cVxMCckjQH";
+private static final String PASSWORD = System.getenv("DB_PASSWORD");
     public static Connection getConnection() {
     try {
         Class.forName("com.mysql.cj.jdbc.Driver");
